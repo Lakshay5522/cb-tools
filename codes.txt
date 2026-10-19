@@ -1,0 +1,3587 @@
+@ds1a @adt
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Define the Student structure
+struct Student {
+    int id;
+    string name;
+    float gpa;
+
+    void display() {
+        cout << "Student ID: " << id << "\nName: " << name << "\nGPA: " << gpa << endl;
+    }
+
+    void updateGPA(float newGPA) {
+        gpa = newGPA;
+    }
+};
+
+// Define the Book structure
+struct Book {
+    string title;
+    string author;
+    int year;
+    bool isAvailable;
+
+    void display() {
+        cout << "Title: " << title << "\nAuthor: " << author
+             << "\nYear: " << year << "\nAvailable: " << (isAvailable ? "Yes" : "No") << endl;
+    }
+
+    void borrowBook() {
+        if (isAvailable) {
+            isAvailable = false;
+            cout << "Book borrowed successfully." << endl;
+        } else {
+            cout << "Book is not available." << endl;
+        }
+    }
+
+    void returnBook() {
+        isAvailable = true;
+    }
+};
+
+// Define the Employee structure
+struct Employee {
+    int empID;
+    string empName;
+    double salary;
+
+    void display() {
+        cout << "Employee ID: " << empID << "\nName: " << empName
+             << "\nSalary: $" << salary << endl;
+    }
+
+    void giveRaise(double percentage) {
+        salary += salary * (percentage / 100);
+    }
+};
+
+// Main function to demonstrate usage
+int main() {
+    // Student
+    Student s1 = {1001, "Alice", 3.8};
+    s1.display();
+    s1.updateGPA(3.9);
+    cout << "\nAfter GPA update:\n";
+    s1.display();
+
+    cout << "\n-------------------\n";
+
+    // Book
+    Book b1 = {"C++ Primer", "Lippman", 2012, true};
+    b1.display();
+    b1.borrowBook();
+    b1.display();
+    b1.returnBook();
+    cout << "\nAfter returning the book:\n";
+    b1.display();
+
+    cout << "\n-------------------\n";
+
+    // Employee
+    Employee e1 = {501, "Bob", 55000.0};
+    e1.display();
+    e1.giveRaise(10); // 10% raise
+    cout << "\nAfter raise:\n";
+    e1.display();
+
+    return 0;
+}
+@end
+
+@ds1b @crud
+#include <iostream>
+using namespace std;
+
+const int MAX = 100; // Maximum number of students
+
+struct Student {
+    int id;
+    char name[50];
+    int age;
+};
+
+// Create a new student
+void createStudent(Student students[], int &count) {
+    if (count >= MAX) {
+        cout << "Maximum limit reached.\n";
+        return;
+    }
+
+    cout << "Enter ID: ";
+    cin >> students[count].id;
+    cout << "Enter Name: ";
+    cin.ignore();
+    cin.getline(students[count].name, 50);
+    cout << "Enter Age: ";
+    cin >> students[count].age;
+
+    count++;
+    cout << "Student created successfully.\n";
+}
+
+// Update student by ID
+void updateStudent(Student students[], int count) {
+    int id;
+    cout << "Enter ID to update: ";
+    cin >> id;
+
+    for (int i = 0; i < count; i++) {
+        if (students[i].id == id) {
+            cout << "Enter new name: ";
+            cin.ignore();
+            cin.getline(students[i].name, 50);
+            cout << "Enter new age: ";
+            cin >> students[i].age;
+            cout << "Student updated successfully.\n";
+            return;
+        }
+    }
+    cout << "Student not found.\n";
+}
+
+// Delete student by ID
+void deleteStudent(Student students[], int &count) {
+    int id;
+    cout << "Enter ID to delete: ";
+    cin >> id;
+
+    for (int i = 0; i < count; i++) {
+        if (students[i].id == id) {
+            // Shift remaining students left
+            for (int j = i; j < count - 1; j++) {
+                students[j] = students[j + 1];
+            }
+            count--;
+            cout << "Student deleted successfully.\n";
+            return;
+        }
+    }
+    cout << "Student not found.\n";
+}
+
+// Display all students
+void displayStudents(Student students[], int count) {
+    cout << "\n--- Student List ---\n";
+    for (int i = 0; i < count; i++) {
+        cout << "ID: " << students[i].id
+             << ", Name: " << students[i].name
+             << ", Age: " << students[i].age << endl;
+    }
+    if (count == 0) {
+        cout << "No students to display.\n";
+    }
+}
+
+int main() {
+    Student students[MAX];
+    int count = 0;
+    int choice;
+
+    do {
+        cout << "\n1. Create Student\n2. Update Student\n3. Delete Student\n4. Display Students\n5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: createStudent(students, count); break;
+            case 2: updateStudent(students, count); break;
+            case 3: deleteStudent(students, count); break;
+            case 4: displayStudents(students, count); break;
+            case 5: cout << "Exiting...\n"; break;
+            default: cout << "Invalid choice. Try again.\n";
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
+@end
+
+@ds2a @stack
+#include <iostream>
+using namespace std;
+
+#define MAX 100 // Maximum size of the stack
+
+class Stack {
+private:
+    int top;
+    int arr[MAX];
+
+public:
+    Stack() {
+        top = -1; // Stack is initially empty
+    }
+
+    // Push operation
+    void push(int x) {
+        if (top >= MAX - 1) {
+            cout << "Stack Overflow" << endl;
+            return;
+        }
+        arr[++top] = x;
+        cout << x << " pushed into stack" << endl;
+    }
+
+    // Pop operation
+    void pop() {
+        if (top < 0) {
+            cout << "Stack Underflow" << endl;
+            return;
+        }
+        cout << arr[top--] << " popped from stack" << endl;
+    }
+
+    // Peek operation
+    void peek() {
+        if (top < 0) {
+            cout << "Stack is Empty" << endl;
+            return;
+        }
+        cout << "Top element is: " << arr[top] << endl;
+    }
+
+    // Display stack contents
+    void display() {
+        if (top < 0) {
+            cout << "Stack is Empty" << endl;
+            return;
+        }
+        cout << "Stack elements: ";
+        for (int i = 0; i <= top; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+// Main function to demonstrate stack operations
+int main() {
+    Stack s;
+
+    s.push(10);
+    s.push(20);
+    s.push(30);
+    s.display();    // Show current stack
+
+    s.peek();       // Show top element
+
+    s.pop();        // Remove top
+    s.display();    // Show current stack
+
+    s.peek();       // Show new top
+
+    return 0;
+}
+@end
+
+@ds2b @undo
+#include <iostream>
+#include <stack>
+using namespace std;
+
+int main() {
+    stack<string> undoStack;
+    string text = "";
+
+    int choice;
+    string input;
+
+    do {
+        cout << "\nCurrent text: \"" << text << "\"" << endl;
+        cout << "1. Type\n2. Undo\n3. Exit\nChoose an option: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter text to append: ";
+                cin >> input;
+                undoStack.push(text); // Save current state
+                text += input;        // text = text + input
+                break;
+            case 2:
+                if (!undoStack.empty()) {
+                    text = undoStack.top(); // Restore previous state
+                    undoStack.pop();
+                } else {
+                    cout << "Nothing to undo." << endl;
+                }
+                break;
+            case 3:
+                cout << "Exiting..." << endl;
+                break;
+            default:
+                cout << "Invalid option." << endl;
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}
+@end
+
+@ds2c @infix
+#include <iostream>
+#include <stack>
+#include <cstring>
+using namespace std;
+
+int getWeight(char ch)
+{
+    switch (ch)
+    {
+    case '/':
+    case '*': return 2;
+    case '+':
+    case '-': return 1;
+    default:  return 0;
+    }
+}
+
+void infix2postfix(char infix[], char postfix[], int size)
+{
+    stack<char> s;
+    int weight;
+    int i = 0;
+    int k = 0;
+    char ch;
+
+    while (i < size)
+    {
+        ch = infix[i];
+
+        if (ch == '(')
+        {
+            s.push(ch);
+            i++;
+            continue;
+        }
+
+        if (ch == ')')
+        {
+            while (!s.empty() && s.top() != '(')
+            {
+                postfix[k++] = s.top();
+                s.pop();
+            }
+            if (!s.empty())
+            {
+                s.pop();
+            }
+            i++;
+            continue;
+        }
+
+        weight = getWeight(ch);
+
+        if (weight == 0)
+        {
+            postfix[k++] = ch;
+        }
+        else
+        {
+            if (s.empty())
+            {
+                s.push(ch);
+            }
+            else
+            {
+                while (!s.empty() && s.top() != '(' && weight <= getWeight(s.top()))
+                {
+                    postfix[k++] = s.top();
+                    s.pop();
+                }
+                s.push(ch);
+            }
+        }
+        i++;
+    }
+
+    while (!s.empty())
+    {
+        postfix[k++] = s.top();
+        s.pop();
+    }
+    postfix[k] = 0;
+}
+
+int main()
+{
+    char infix[] = "A*(B+C)/D";
+    int size = strlen(infix);
+    char postfix[size];
+
+    infix2postfix(infix, postfix, size);
+
+    cout << "\n infix expression::" << infix << endl;
+    cout << "\n postfix expression::" << postfix << endl;
+}
+@end
+
+@ds3a @queue
+#include <iostream>
+#define SIZE 5 /* Size of Circular Queue */
+
+using namespace std;
+
+class Queue {
+   private:
+  int items[SIZE], front, rear;
+
+   public:
+  Queue() {
+    front = -1;
+    rear = -1;
+  }
+
+  // Check if the queue is full
+  bool isFull() {
+    if (front == 0 && rear == SIZE - 1) {
+      return true;
+    }
+    if (front == (rear + 1) % SIZE) {
+      return true;
+    }
+    return false;
+  }
+
+  // Check if the queue is empty
+  bool isEmpty() {
+    if (front == -1)
+      return true;
+    else
+      return false;
+  }
+
+  // Adding an element
+  void enQueue(int element) {
+    if (isFull()) {
+      cout << "Queue is full" << endl;
+    } else {
+      if (front == -1) front = 0;
+      rear = (rear + 1) % SIZE;
+      items[rear] = element;
+      cout << endl << "Inserted " << element << endl;
+    }
+  }
+
+  // Removing an element
+  int deQueue() {
+    int element;
+    if (isEmpty()) {
+      cout << "Queue is empty" << endl;
+      return (-1);
+    } else {
+      element = items[front];
+      if (front == rear) {
+        front = -1;
+        rear = -1;
+      }
+      // Q has only one element, so we reset the queue after deleting it.
+      else {
+        front = (front + 1) % SIZE;
+      }
+      return (element);
+    }
+  }
+
+  void display() {
+    // Function to display status of Circular Queue
+    int i;
+    if (isEmpty()) {
+      cout << endl << "Empty Queue" << endl;
+    } else {
+      cout << "Front -> " << front;
+      cout << endl << "Items -> ";
+      for (i = front; i != rear; i = (i + 1) % SIZE)
+        cout << items[i] << "\t";
+      cout << items[i];
+      cout << endl << "Rear -> " << rear << endl;
+    }
+  }
+};
+
+int main() {
+  Queue q;
+
+  // Fails because front = -1
+  q.deQueue();
+
+  q.enQueue(1);
+  q.enQueue(2);
+  q.enQueue(3);
+  q.enQueue(4);
+  q.enQueue(5);
+
+  // Fails to enqueue because front == 0 && rear == SIZE - 1
+  q.enQueue(6);
+
+  q.display();
+
+  int elem = q.deQueue();
+
+  if (elem != -1)
+    cout << endl << "Deleted Element is " << elem << endl;
+  q.display();
+  q.enQueue(7);
+  q.display();
+
+  // Fails to enqueue because front == rear + 1
+  q.enQueue(8);
+
+  return 0;
+}
+@end
+
+@ds4a @sll
+#include <iostream>
+using namespace std;
+
+// Define a Node
+struct Node {
+    int data;
+    Node* next;
+};
+
+// Class for Singly Linked List
+class LinkedList {
+private:
+    Node* head;
+
+public:
+    LinkedList() {
+        head = nullptr;
+    }
+
+    // Insert at the end
+    void insertAtEnd(int value) {
+        Node* newNode = new Node{value, nullptr};
+        if (head == nullptr) {
+            head = newNode;
+        } else {
+            Node* temp = head;
+            while (temp->next != nullptr)
+                temp = temp->next;
+            temp->next = newNode;
+        }
+    }
+
+    // Insert at the beginning
+    void insertAtBeginning(int value) {
+        Node* newNode = new Node{value, head};
+        head = newNode;
+    }
+
+    // Delete a node by value
+    void deleteNode(int value) {
+        if (head == nullptr) {
+            cout << "List is empty!\n";
+            return;
+        }
+
+        // If the node to delete is the head
+        if (head->data == value) {
+            Node* toDelete = head;
+            head = head->next;
+            delete toDelete;
+            cout << "Deleted " << value << endl;
+            return;
+        }
+
+        Node* temp = head;
+        while (temp->next != nullptr && temp->next->data != value) {
+            temp = temp->next;
+        }
+
+        if (temp->next == nullptr) {
+            // Value not found
+            return;
+        }
+
+        Node* toDelete = temp->next;
+        temp->next = temp->next->next;
+        delete toDelete;
+        cout << "Deleted " << value << endl;
+    }
+
+    // Display the list
+    void display() {
+        if (head == nullptr) {
+            cout << "List is empty!\n";
+            return;
+        }
+
+        Node* temp = head;
+        cout << "List: ";
+        while (temp != nullptr) {
+            cout << temp->data << " -> ";
+            temp = temp->next;
+        }
+        cout << "NULL\n";
+    }
+
+    // Destructor to free memory
+    ~LinkedList() {
+        Node* current = head;
+        while (current != nullptr) {
+            Node* next = current->next;
+            delete current;
+            current = next;
+        }
+    }
+};
+
+// Main function
+int main() {
+    LinkedList list;
+
+    list.insertAtEnd(10);
+    list.insertAtEnd(20);
+    list.insertAtBeginning(5);
+    list.display();
+
+    list.deleteNode(20);
+    list.display();
+
+    list.deleteNode(100); // Try deleting non-existing value
+
+    return 0;
+}
+@end
+
+@ds4b @playlist
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Node representing each song
+struct Song {
+    string title;
+    Song* next;
+};
+
+// Playlist class
+class Playlist {
+private:
+    Song* head;
+
+public:
+    Playlist() {
+        head = nullptr;
+    }
+
+    // Add a song to the end
+    void addSong(const string& title) {
+        Song* newSong = new Song{title, nullptr};
+        if (!head) {
+            head = newSong;
+        } else {
+            Song* temp = head;
+            while (temp->next)
+                temp = temp->next;
+            temp->next = newSong;
+        }
+        cout << "Added \"" << title << "\" to playlist.\n";
+    }
+
+    // Remove song by title
+    void removeSong(const string& title) {
+        if (!head) {
+            cout << "Playlist is empty!\n";
+            return;
+        }
+
+        // If song is first
+        if (head->title == title) {
+            Song* toDelete = head;
+            head = head->next;
+            delete toDelete;
+            cout << "Removed \"" << title << "\" from playlist.\n";
+            return;
+        }
+
+        // Find the song before the one to delete
+        Song* temp = head;
+        while (temp->next && temp->next->title != title)
+            temp = temp->next;
+
+        if (!temp->next) {
+            cout << "Song \"" << title << "\" not found!\n";
+            return;
+        }
+
+        Song* toDelete = temp->next;
+        temp->next = temp->next->next;
+        delete toDelete;
+        cout << "Removed \"" << title << "\" from playlist.\n";
+    }
+
+    // Display playlist
+    void displayPlaylist() {
+        if (!head) {
+            cout << "Playlist is empty.\n";
+            return;
+        }
+
+        cout << "Current Playlist:\n";
+        Song* temp = head;
+        int index = 1;
+        while (temp) {
+            cout << index++ << ". " << temp->title << endl;
+            temp = temp->next;
+        }
+    }
+
+    // Simulate playing the playlist
+    void playSongs() {
+        if (!head) {
+            cout << "Playlist is empty. Nothing to play.\n";
+            return;
+        }
+
+        cout << "Playing playlist:\n";
+        Song* temp = head;
+        while (temp) {
+            cout << "Now playing: " << temp->title << endl;
+            temp = temp->next;
+        }
+    }
+
+    // Destructor to free memory
+    ~Playlist() {
+        while (head) {
+            Song* next = head->next;
+            delete head;
+            head = next;
+        }
+    }
+};
+
+// Main function
+int main() {
+    Playlist myPlaylist;
+
+    myPlaylist.addSong("Shape of You");
+    myPlaylist.addSong("Believer");
+    myPlaylist.addSong("Faded");
+
+    myPlaylist.displayPlaylist();
+    cout << endl;
+
+    myPlaylist.playSongs();
+    cout << endl;
+
+    myPlaylist.removeSong("Believer");
+    myPlaylist.displayPlaylist();
+    cout << endl;
+
+    myPlaylist.removeSong("Non-existent Song");
+
+    return 0;
+}
+@end
+
+@ds5a @dll
+#include <iostream>
+using namespace std;
+
+// Node structure
+class Node {
+public:
+    int data;
+    Node* prev;
+    Node* next;
+
+    Node(int value) {
+        data = value;
+        prev = nullptr;
+        next = nullptr;
+    }
+};
+
+// Doubly Linked List
+class DoublyLinkedList {
+private:
+    Node* head;
+
+public:
+    DoublyLinkedList() {
+        head = nullptr;
+    }
+
+    // Add node at the end
+    void append(int value) {
+        Node* newNode = new Node(value);
+        if (head == nullptr) {
+            head = newNode;
+            return;
+        }
+
+        Node* temp = head;
+        while (temp->next != nullptr)
+            temp = temp->next;
+
+        temp->next = newNode;
+        newNode->prev = temp;
+    }
+
+    // Forward traversal
+    void displayForward() {
+        Node* temp = head;
+        cout << "Forward: ";
+        while (temp != nullptr) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+    // Backward traversal
+    void displayBackward() {
+        if (head == nullptr) {
+            cout << "List is empty.\n";
+            return;
+        }
+
+        // Go to last node
+        Node* temp = head;
+        while (temp->next != nullptr)
+            temp = temp->next;
+
+        cout << "Backward: ";
+        while (temp != nullptr) {
+            cout << temp->data << " ";
+            temp = temp->prev;
+        }
+        cout << endl;
+    }
+};
+
+// Main function
+int main() {
+    DoublyLinkedList dll;
+
+    dll.append(10);
+    dll.append(20);
+    dll.append(30);
+    dll.append(40);
+
+    dll.displayForward();   // Output: 10 20 30 40
+    dll.displayBackward();  // Output: 40 30 20 10
+
+    return 0;
+}
+@end
+
+@ds5b @dllops
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+
+    Node(int value) {
+        data = value;
+        next = nullptr;
+    }
+};
+
+class LinkedList {
+private:
+    Node* head;
+
+public:
+    LinkedList() {
+        head = nullptr;
+    }
+
+    // Insert at head
+    void insertAtHead(int value) {
+        Node* newNode = new Node(value);
+        newNode->next = head;
+        head = newNode;
+    }
+
+    // Insert at tail
+    void insertAtTail(int value) {
+        Node* newNode = new Node(value);
+        if (!head) {
+            head = newNode;
+            return;
+        }
+        Node* temp = head;
+        while (temp->next) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+
+    // Insert at specific position (0-based index)
+    void insertAtPosition(int position, int value) {
+        if (position == 0) {
+            insertAtHead(value);
+            return;
+        }
+
+        Node* newNode = new Node(value);
+        Node* temp = head;
+
+        for (int i = 0; i < position - 1 && temp; ++i) {
+            temp = temp->next;
+        }
+
+        if (!temp) {
+            cout << "Position out of bounds.\n";
+            return;
+        }
+
+        newNode->next = temp->next;
+        temp->next = newNode;
+    }
+
+    // Delete head
+    void deleteAtHead() {
+        if (!head) {
+            cout << "List is empty.\n";
+            return;
+        }
+
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+    }
+
+    // Delete tail
+    void deleteAtTail() {
+        if (!head) {
+            cout << "List is empty.\n";
+            return;
+        }
+
+        if (!head->next) {
+            delete head;
+            head = nullptr;
+            return;
+        }
+
+        Node* temp = head;
+        while (temp->next && temp->next->next) {
+            temp = temp->next;
+        }
+
+        delete temp->next;
+        temp->next = nullptr;
+    }
+
+    // Delete at specific position (0-based index)
+    void deleteAtPosition(int position) {
+        if (!head) {
+            cout << "List is empty.\n";
+            return;
+        }
+
+        if (position == 0) {
+            deleteAtHead();
+            return;
+        }
+
+        Node* temp = head;
+        for (int i = 0; i < position - 1 && temp; ++i) {
+            temp = temp->next;
+        }
+
+        if (!temp || !temp->next) {
+            cout << "Position out of bounds.\n";
+            return;
+        }
+
+        Node* toDelete = temp->next;
+        temp->next = temp->next->next;
+        delete toDelete;
+    }
+
+    // Display list
+    void display() {
+        Node* temp = head;
+        while (temp) {
+            cout << temp->data << " -> ";
+            temp = temp->next;
+        }
+        cout << "NULL\n";
+    }
+};
+
+int main() {
+    LinkedList list;
+
+    list.insertAtHead(10);
+    list.insertAtTail(20);
+    list.insertAtTail(30);
+    list.insertAtPosition(1, 15);  // Insert 15 at position 1
+    list.insertAtPosition(2, 35);
+    cout << "List after insertions:\n";
+    list.display();
+
+    list.deleteAtHead();
+    list.deleteAtTail();
+
+    list.deleteAtPosition(2);  // Delete node at position 2
+
+    cout << "List after deletions:\n";
+    list.display();
+
+    return 0;
+}
+@end
+
+@ds5c @undoredo
+#include <iostream>
+using namespace std;
+
+struct Action {
+    string text;
+    Action* prev;
+    Action* next;
+
+    Action(string t) : text(t), prev(nullptr), next(nullptr) {}
+};
+
+class TextEditor {
+private:
+    Action* current;
+
+public:
+    TextEditor(string initial = "") {
+        current = new Action(initial);
+    }
+
+    void type(string newText) {
+        Action* newAction = new Action(newText);
+        current->next = nullptr;  // Clear redo stack
+        newAction->prev = current;
+        current->next = newAction;
+        current = newAction;
+    }
+
+    void undo() {
+        if (current->prev) {
+            current = current->prev;
+        } else {
+            cout << "Nothing to undo.\n";
+        }
+    }
+
+    void redo() {
+        if (current->next) {
+            current = current->next;
+        } else {
+            cout << "Nothing to redo.\n";
+        }
+    }
+
+    void showText() {
+        cout << "Current text: " << current->text << "\n";
+    }
+};
+
+int main() {
+    TextEditor editor("Hello");
+
+    editor.type("Hello World");
+    editor.type("Hello World!!!");
+    editor.showText();  // Hello World!!!
+
+    editor.undo();
+    editor.showText();  // Hello World
+
+    editor.undo();
+    editor.showText();  // Hello
+
+    editor.redo();
+    editor.showText();  // Hello World
+
+    editor.type("New content");  // Redo history cleared
+    editor.showText();
+
+    editor.redo();  // Nothing to redo
+    return 0;
+}
+@end
+
+@ds7a @bst
+#include <iostream>
+using namespace std;
+
+// Define structure for a node in the BST
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = right = nullptr;
+    }
+};
+
+// Function to insert a node in the BST
+Node* insertBST(Node* root, int value) {
+    if (root == nullptr) {
+        // Create new node if tree is empty or at correct position
+        return new Node(value);
+    }
+
+    // Go to left subtree if value is smaller
+    if (value < root->data) {
+        root->left = insertBST(root->left, value);
+    }
+    // Go to right subtree if value is greater
+    else {
+        root->right = insertBST(root->right, value);
+    }
+
+    return root;
+}
+
+// In-order traversal to print BST in sorted order
+void inOrderTraversal(Node* root) {
+    if (root == nullptr) return;
+
+    inOrderTraversal(root->left);
+    cout << root->data << " ";
+    inOrderTraversal(root->right);
+}
+
+int main() {
+    // Example dataset
+    int data[] = {50, 30, 20, 40, 70, 60, 80};
+    int size = sizeof(data) / sizeof(data[0]);
+
+    Node* root = nullptr;
+
+    // Insert each element into the BST
+    for (int i = 0; i < size; ++i) {
+        root = insertBST(root, data[i]);
+    }
+
+    // Print in-order traversal (should be sorted)
+    cout << "In-order traversal of the BST: ";
+    inOrderTraversal(root);
+    cout << endl;
+
+    return 0;
+}
+@end
+
+@ds7b @inorder
+#include <iostream>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = right = nullptr;
+    }
+};
+
+// Insert a node into the BST
+Node* insertBST(Node* root, int value) {
+    if (root == nullptr)
+        return new Node(value);
+
+    if (value < root->data)
+        root->left = insertBST(root->left, value);
+    else
+        root->right = insertBST(root->right, value);
+
+    return root;
+}
+
+// In-order traversal (Left, Root, Right)
+void inOrder(Node* root) {
+    if (!root) return;
+    inOrder(root->left);
+    cout << root->data << " ";
+    inOrder(root->right);
+}
+
+int main() {
+    int data[] = {50, 30, 20, 40, 70, 60, 80};
+    int size = sizeof(data) / sizeof(data[0]);
+
+    Node* root = nullptr;
+    for (int i = 0; i < size; ++i)
+        root = insertBST(root, data[i]);
+
+    cout << "In-order Traversal   : ";
+    inOrder(root);
+    cout << endl;
+
+    return 0;
+}
+@end
+
+@ds7c @preorder
+#include <iostream>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = right = nullptr;
+    }
+};
+
+// Insert a node into the BST
+Node* insertBST(Node* root, int value) {
+    if (root == nullptr)
+        return new Node(value);
+
+    if (value < root->data)
+        root->left = insertBST(root->left, value);
+    else
+        root->right = insertBST(root->right, value);
+
+    return root;
+}
+
+// Pre-order traversal (Root, Left, Right)
+void preOrder(Node* root) {
+    if (!root) return;
+    cout << root->data << " ";
+    preOrder(root->left);
+    preOrder(root->right);
+}
+
+int main() {
+    int data[] = {50, 30, 20, 40, 70, 60, 80};
+    int size = sizeof(data) / sizeof(data[0]);
+
+    Node* root = nullptr;
+    for (int i = 0; i < size; ++i)
+        root = insertBST(root, data[i]);
+
+    cout << "Pre-order Traversal  : ";
+    preOrder(root);
+    cout << endl;
+
+    return 0;
+}
+@end
+
+@ds7d @postorder
+#include <iostream>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = right = nullptr;
+    }
+};
+
+// Insert a node into the BST
+Node* insertBST(Node* root, int value) {
+    if (root == nullptr)
+        return new Node(value);
+
+    if (value < root->data)
+        root->left = insertBST(root->left, value);
+    else
+        root->right = insertBST(root->right, value);
+
+    return root;
+}
+
+// Post-order traversal (Left, Right, Root)
+void postOrder(Node* root) {
+    if (!root) return;
+    postOrder(root->left);
+    postOrder(root->right);
+    cout << root->data << " ";
+}
+
+int main() {
+    int data[] = {50, 30, 20, 40, 70, 60, 80};
+    int size = sizeof(data) / sizeof(data[0]);
+
+    Node* root = nullptr;
+    for (int i = 0; i < size; ++i)
+        root = insertBST(root, data[i]);
+
+    cout << "Post-order Traversal : ";
+    postOrder(root);
+    cout << endl;
+
+    return 0;
+}
+@end
+
+@ds8a @maxheap
+#include <iostream>
+using namespace std;
+
+// Function to heapify a subtree rooted at index i
+void heapify(int arr[], int n, int i) {
+    int largest = i;           // Assume current root is the largest
+    int left = 2 * i + 1;      // Left child index
+    int right = 2 * i + 2;     // Right child index
+
+    // If left child is larger than root
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+
+    // If right child is larger than the current largest
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    // If largest is not root, swap and continue heapifying
+    if (largest != i) {
+        swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);  // Recursively heapify the affected subtree
+    }
+}
+
+// Function to build a max heap from the array
+void buildMaxHeap(int arr[], int n) {
+    // Start from the last non-leaf node and go up to the root
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+}
+
+// Function to print the array
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+    cout << endl;
+}
+
+// Main function
+int main() {
+    int arr[] = {10, 20, 15, 30, 40};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    cout << "Original array:\n";
+    printArray(arr, n);
+
+    buildMaxHeap(arr, n);
+
+    cout << "Max Heap:\n";
+    printArray(arr, n);
+
+    return 0;
+}
+@end
+
+@ds8b @minheap
+#include <iostream>
+using namespace std;
+
+// Function to heapify a subtree rooted at index i for Min Heap
+void minHeapify(int arr[], int n, int i) {
+    int smallest = i;          // Assume current node is smallest
+    int left = 2 * i + 1;      // Index of left child
+    int right = 2 * i + 2;     // Index of right child
+
+    // If left child is smaller than current smallest
+    if (left < n && arr[left] < arr[smallest])
+        smallest = left;
+
+    // If right child is smaller than current smallest
+    if (right < n && arr[right] < arr[smallest])
+        smallest = right;
+
+    // If smallest is not root, swap and continue heapifying
+    if (smallest != i) {
+        swap(arr[i], arr[smallest]);
+        minHeapify(arr, n, smallest);  // Recursively heapify the affected subtree
+    }
+}
+
+// Function to build a Min Heap from an array
+void buildMinHeap(int arr[], int n) {
+    // Start from last non-leaf node and go up to root
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        minHeapify(arr, n, i);
+    }
+}
+
+// Function to print the array
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; ++i)
+        cout << arr[i] << " ";
+    cout << endl;
+}
+
+// Main function
+int main() {
+    int arr[] = {40, 20, 30, 10, 50, 15};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    cout << "Original array:\n";
+    printArray(arr, n);
+
+    buildMinHeap(arr, n);
+
+    cout << "Min Heap:\n";
+    printArray(arr, n);
+
+    return 0;
+}
+@end
+
+@ds8c @minheapinsert
+#include <iostream>
+using namespace std;
+
+int heap[100];
+int n = 0;
+
+// Insert into Min Heap
+void insert(int value) {
+    int i = n;
+    heap[n] = value;
+    n++;
+
+    // Move upward
+    while (i > 0) {
+        int parent = (i - 1) / 2;
+
+        // If parent is already smaller, stop
+        if (heap[parent] <= heap[i])
+            break;
+
+        // Swap parent and child
+        swap(heap[parent], heap[i]);
+
+        i = parent;
+    }
+}
+
+// Display heap
+void display() {
+    for (int i = 0; i < n; i++)
+        cout << heap[i] << " ";
+}
+
+int main() {
+    insert(30);
+    insert(10);
+    insert(20);
+    insert(5);
+    insert(40);
+
+    cout << "Min Heap: ";
+    display();
+
+    return 0;
+}
+@end
+
+@ds8d @maxheapinsert
+#include <iostream>
+using namespace std;
+
+int heap[100];
+int n = 0;
+
+// Insert into Max Heap
+void insert(int value) {
+    int i = n;
+    heap[n] = value;
+    n++;
+
+    // Move upward
+    while (i > 0) {
+        int parent = (i - 1) / 2;
+
+        // If parent is already larger, stop
+        if (heap[parent] >= heap[i])
+            break;
+
+        // Swap parent and child
+        swap(heap[parent], heap[i]);
+
+        i = parent;
+    }
+}
+
+// Display heap
+void display() {
+    for (int i = 0; i < n; i++)
+        cout << heap[i] << " ";
+}
+
+int main() {
+    insert(30);
+    insert(10);
+    insert(20);
+    insert(5);
+    insert(40);
+
+    cout << "Max Heap: ";
+    display();
+
+    return 0;
+}
+@end
+
+@ds9a @graphmatrix
+#include <iostream>
+using namespace std;
+
+#define MAX_VERTICES 10
+
+class GraphMatrix {
+private:
+    int adjMatrix[MAX_VERTICES][MAX_VERTICES];
+    int numVertices;
+
+public:
+    GraphMatrix(int vertices) {
+        numVertices = vertices;
+        // Initialize matrix with 0s
+        for (int i = 0; i < numVertices; i++)
+            for (int j = 0; j < numVertices; j++)
+                adjMatrix[i][j] = 0;
+    }
+
+    void addEdge(int i, int j) {
+        adjMatrix[i][j] = 1;
+        adjMatrix[j][i] = 1; // For undirected graph
+    }
+
+    void display() {
+        cout << "\nAdjacency Matrix:\n";
+        for (int i = 0; i < numVertices; i++) {
+            for (int j = 0; j < numVertices; j++) {
+                cout << adjMatrix[i][j] << " ";
+            }
+            cout << endl;
+        }
+    }
+};
+
+int main() {
+    int vertices = 5;
+    GraphMatrix g(vertices);
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 4);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(1, 4);
+    g.addEdge(2, 3);
+    g.addEdge(3, 4);
+
+    g.display();
+    return 0;
+}
+@end
+
+@ds9b @graphlist
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class GraphList {
+private:
+    int numVertices;
+    vector<vector<int>> adjList;
+
+public:
+    GraphList(int vertices) {
+        numVertices = vertices;
+        adjList.resize(vertices);
+    }
+
+    void addEdge(int u, int v) {
+        adjList[u].push_back(v);
+        adjList[v].push_back(u); // For undirected graph
+    }
+
+    void display() {
+        cout << "\nAdjacency List:\n";
+        for (int i = 0; i < numVertices; i++) {
+            cout << i << " -> ";
+            for (int j : adjList[i]) {
+                cout << j << " ";
+            }
+            cout << endl;
+        }
+    }
+};
+
+int main() {
+    int vertices = 5;
+    GraphList g(vertices);
+
+    g.addEdge(0, 1);
+    g.addEdge(0, 4);
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(1, 4);
+    g.addEdge(2, 3);
+    g.addEdge(3, 4);
+
+    g.display();
+    return 0;
+}
+@end
+
+@ds9c @bfsdfs
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+class Graph {
+    int V; // Number of vertices
+    vector<vector<int>> adj;
+
+public:
+    Graph(int V) {
+        this->V = V;
+        adj.resize(V);
+    }
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+        adj[v].push_back(u); // Undirected graph
+    }
+
+    void BFS(int start, vector<bool>& visited) {
+        queue<int> q;
+        visited[start] = true;
+        q.push(start);
+
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+            cout << node << " ";
+
+            for (int neighbor : adj[node]) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    q.push(neighbor);
+                }
+            }
+        }
+    }
+
+    void DFSUtil(int node, vector<bool>& visited) {
+        visited[node] = true;
+        cout << node << " ";
+
+        for (int neighbor : adj[node]) {
+            if (!visited[neighbor]) {
+                DFSUtil(neighbor, visited);
+            }
+        }
+    }
+
+    void exploreComponentsBFS() {
+        vector<bool> visited(V, false);
+        cout << "BFS Traversal of Components:\n";
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                cout << "Component: ";
+                BFS(i, visited);
+                cout << "\n";
+            }
+        }
+    }
+
+    void exploreComponentsDFS() {
+        vector<bool> visited(V, false);
+        cout << "DFS Traversal of Components:\n";
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                cout << "Component: ";
+                DFSUtil(i, visited);
+                cout << "\n";
+            }
+        }
+    }
+};
+
+int main() {
+    Graph g(7);
+
+    // Add edges
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(3, 4);
+    g.addEdge(5, 6);
+
+    // BFS & DFS component exploration
+    g.exploreComponentsBFS();
+    cout << endl;
+    g.exploreComponentsDFS();
+
+    return 0;
+}
+@end
+
+@ds10a @hashlinear
+#include <iostream>
+using namespace std;
+
+class HashTable {
+private:
+    static const int SIZE = 10;
+    int table[SIZE];
+
+    int hashFunction(int key) {
+        return key % SIZE;
+    }
+
+public:
+    HashTable() {
+        for (int i = 0; i < SIZE; i++)
+            table[i] = -1; // -1 means empty
+    }
+
+    void insert(int key) {
+        int index = hashFunction(key);
+        int startIndex = index; // To detect full loop
+
+        while (table[index] != -1) {
+            index = (index + 1) % SIZE;
+            if (index == startIndex) {
+                cout << "Hash Table is full!\n";
+                return;
+            }
+        }
+        table[index] = key;
+    }
+
+    bool search(int key) {
+        int index = hashFunction(key);
+        int startIndex = index;
+
+        while (table[index] != -1) {
+            if (table[index] == key) return true;
+            index = (index + 1) % SIZE;
+            if (index == startIndex) break;
+        }
+        return false;
+    }
+
+    void remove(int key) {
+        int index = hashFunction(key);
+        int startIndex = index;
+
+        while (table[index] != -1) {
+            if (table[index] == key) {
+                table[index] = -2; // -2 means deleted
+                return;
+            }
+            index = (index + 1) % SIZE;
+            if (index == startIndex) break;
+        }
+    }
+
+    void display() {
+        for (int i = 0; i < SIZE; i++) {
+            cout << i << ": " << table[i] << endl;
+        }
+    }
+};
+
+int main() {
+    HashTable ht;
+    ht.insert(10);
+    ht.insert(20);
+    ht.insert(15);
+    ht.insert(7);
+
+    ht.display();
+
+    cout << "Searching 15: " << (ht.search(15) ? "Found" : "Not Found") << endl;
+    ht.remove(15);
+    cout << "After removing 15:\n";
+    ht.display();
+
+    return 0;
+}
+@end
+
+@ds10b @hashchain
+#include <iostream>
+#include <list>
+using namespace std;
+
+class HashTable {
+private:
+    static const int SIZE = 5; // Small size to force collisions
+    list<int> table[SIZE];
+
+    int hashFunction(int key) {
+        return key % SIZE;
+    }
+
+public:
+    void insert(int key) {
+        int index = hashFunction(key);
+        table[index].push_back(key);
+        cout << "Inserted " << key << " at bucket " << index << endl;
+    }
+
+    bool search(int key) {
+        int index = hashFunction(key);
+        for (auto &x : table[index]) {
+            if (x == key) {
+                cout << "Found " << key << " in bucket " << index << endl;
+                return true;
+            }
+        }
+        cout << key << " not found!" << endl;
+        return false;
+    }
+
+    void remove(int key) {
+        int index = hashFunction(key);
+        table[index].remove(key);
+        cout << "Removed " << key << " from bucket " << index << endl;
+    }
+
+    void display() {
+        cout << "\nHash Table State:\n";
+        for (int i = 0; i < SIZE; i++) {
+            cout << i << ": ";
+            for (auto &x : table[i]) {
+                cout << x << " -> ";
+            }
+            cout << "NULL\n";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    HashTable ht;
+
+    // Insertion with collisions
+    ht.insert(10); // bucket 0
+    ht.insert(15); // bucket 0 (collision with 10)
+    ht.insert(7);  // bucket 2
+    ht.insert(12); // bucket 2 (collision with 7)
+
+    ht.display();
+
+    // Searching
+    ht.search(15); // Found
+    ht.search(5);  // Not found
+
+    // Deletion
+    ht.remove(15);
+    ht.display();
+
+    return 0;
+}
+@end
+
+@ds10c @hashlinear2
+#include <iostream>
+using namespace std;
+
+class HashTable {
+private:
+    static const int SIZE = 5; // Small to force collisions
+    int table[SIZE];
+
+    int hashFunction(int key) {
+        return key % SIZE;
+    }
+
+public:
+    HashTable() {
+        for (int i = 0; i < SIZE; i++)
+            table[i] = -1; // Empty
+    }
+
+    void insert(int key) {
+        int index = hashFunction(key);
+        int startIndex = index;
+
+        while (table[index] != -1 && table[index] != -2) {
+            index = (index + 1) % SIZE;
+            if (index == startIndex) {
+                cout << "Hash Table is full!\n";
+                return;
+            }
+        }
+        table[index] = key;
+        cout << "Inserted " << key << " at index " << index << endl;
+    }
+
+    bool search(int key) {
+        int index = hashFunction(key);
+        int startIndex = index;
+
+        while (table[index] != -1) {
+            if (table[index] == key) {
+                cout << "Found " << key << " at index " << index << endl;
+                return true;
+            }
+            index = (index + 1) % SIZE;
+            if (index == startIndex) break;
+        }
+        cout << key << " not found!\n";
+        return false;
+    }
+
+    void remove(int key) {
+        int index = hashFunction(key);
+        int startIndex = index;
+
+        while (table[index] != -1) {
+            if (table[index] == key) {
+                table[index] = -2; // Deleted marker
+                cout << "Removed " << key << " from index " << index << endl;
+                return;
+            }
+            index = (index + 1) % SIZE;
+            if (index == startIndex) break;
+        }
+        cout << key << " not found!\n";
+    }
+
+    void display() {
+        cout << "\nHash Table State:\n";
+        for (int i = 0; i < SIZE; i++) {
+            cout << i << ": " << table[i] << endl;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    HashTable ht;
+
+    // Insertion with collisions
+    ht.insert(10); // index 0
+    ht.insert(15); // collision -> index 1
+    ht.insert(7);  // index 2
+    ht.insert(12); // collision -> index 3
+
+    ht.display();
+
+    // Searching
+    ht.search(15); // Found
+    ht.search(5);  // Not found
+
+    // Deletion
+    ht.remove(15);
+    ht.display();
+
+    return 0;
+}
+@end
+
+@os1a @sharedmemory
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+
+public class SharedMemoryIPC {
+
+    private static final String FILE_NAME = "shared_memory.dat";
+
+    public static void main(String[] args) throws Exception {
+        // Create/open a file
+        RandomAccessFile file = new RandomAccessFile(FILE_NAME, "rw");
+        FileChannel channel = file.getChannel();
+
+        // Map 1024 bytes of the file into memory
+        MappedByteBuffer sharedMemory =
+            channel.map(FileChannel.MapMode.READ_WRITE, 0, 1024);
+
+        // Process 1 writes data to shared memory
+        String message = "Hello from Process 1!";
+        sharedMemory.put(message.getBytes());
+        System.out.println("Process 1 wrote: " + message);
+
+        // Reset position to read the data
+        sharedMemory.position(0);
+
+        // Process 2 reads data from shared memory
+        byte[] data = new byte[message.length()];
+        sharedMemory.get(data);
+        String receivedMessage = new String(data);
+        System.out.println("Process 2 read: " + receivedMessage);
+
+        // Close resources
+        channel.close();
+        file.close();
+    }
+}
+@end
+
+@os1b @producerconsumer
+import java.util.concurrent.Semaphore;
+
+public class ProducerConsumer {
+
+    // Shared memory (buffer)
+    static int[] buffer = new int[5];
+
+    static int in = 0;
+    static int out = 0;
+
+    // Semaphores
+    static Semaphore empty = new Semaphore(5);
+    static Semaphore full = new Semaphore(0);
+    static Semaphore mutex = new Semaphore(1);
+
+    // Producer
+    static class Producer extends Thread {
+        public void run() {
+            for (int i = 1; i <= 10; i++) {
+                try {
+                    empty.acquire();   // Wait for empty space
+                    mutex.acquire();   // Enter critical section
+
+                    buffer[in] = i;
+                    System.out.println("Producer produced: " + i);
+                    in = (in + 1) % buffer.length;
+
+                    mutex.release();   // Leave critical section
+                    full.release();    // Increase full count
+
+                    Thread.sleep(500);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    // Consumer
+    static class Consumer extends Thread {
+        public void run() {
+            for (int i = 1; i <= 10; i++) {
+                try {
+                    full.acquire();    // Wait for an item
+                    mutex.acquire();   // Enter critical section
+
+                    int item = buffer[out];
+                    System.out.println("Consumer consumed: " + item);
+
+                    out = (out + 1) % buffer.length;
+
+                    mutex.release();   // Leave critical section
+                    empty.release();   // Increase empty count
+
+                    Thread.sleep(800);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        Producer producer = new Producer();
+        Consumer consumer = new Consumer();
+
+        producer.start();
+        consumer.start();
+
+        producer.join();
+        consumer.join();
+
+        System.out.println("Producer-Consumer execution completed.");
+    }
+}
+@end
+
+@os1c @racecondition
+public class RaceCondition {
+    static int counter = 0;
+
+    // Method without synchronization
+    static class UnsafeCounter extends Thread {
+        public void run() {
+            for (int i = 0; i < 1000; i++) {
+                counter++;
+            }
+        }
+    }
+
+    // Method with synchronization
+    static class SafeCounter extends Thread {
+        public void run() {
+            for (int i = 0; i < 1000; i++) {
+                increment();
+            }
+        }
+    }
+
+    // Synchronized method prevents race condition
+    static synchronized void increment() {
+        counter++;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+
+        // -------- Race Condition --------
+        counter = 0;
+
+        Thread t1 = new UnsafeCounter();
+        Thread t2 = new UnsafeCounter();
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("Without synchronization:");
+        System.out.println("Counter = " + counter);
+        System.out.println("Expected = 2000");
+
+        // -------- Avoiding Race Condition --------
+        counter = 0;
+
+        Thread t3 = new SafeCounter();
+        Thread t4 = new SafeCounter();
+
+        t3.start();
+        t4.start();
+
+        t3.join();
+        t4.join();
+
+        System.out.println("\nWith synchronization:");
+        System.out.println("Counter = " + counter);
+        System.out.println("Expected = 2000");
+    }
+}
+@end
+
+@os2a @pcqueue
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+class Producer extends Thread {
+    private BlockingQueue<Integer> queue;
+
+    Producer(BlockingQueue<Integer> queue) {
+        this.queue = queue;
+    }
+
+    public void run() {
+        try {
+            for (int i = 1; i <= 5; i++) {
+                System.out.println("Producer produced: " + i);
+                queue.put(i);
+                Thread.sleep(500);
+            }
+
+            queue.put(-1);
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+class Consumer extends Thread {
+    private BlockingQueue<Integer> queue;
+
+    Consumer(BlockingQueue<Integer> queue) {
+        this.queue = queue;
+    }
+
+    public void run() {
+        try {
+            while (true) {
+                int value = queue.take();
+
+                if (value == -1) {
+                    break;
+                }
+
+                System.out.println("Consumer consumed: " + value);
+                Thread.sleep(800);
+            }
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+public class ProducerConsumer {
+    public static void main(String[] args) throws InterruptedException {
+
+        // Message queue with capacity 2
+        BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(2);
+
+        Producer producer = new Producer(queue);
+        Consumer consumer = new Consumer(queue);
+
+        producer.start();
+        consumer.start();
+
+        producer.join();
+        consumer.join();
+
+        System.out.println("Producer and Consumer finished.");
+    }
+}
+@end
+
+@os2b @comparecomm
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ArrayBlockingQueue;
+
+public class CompareCommunication {
+
+    // Shared memory example
+    static int sharedData = 0;
+
+    static class SharedProducer extends Thread {
+        public void run() {
+            for (int i = 1; i <= 5; i++) {
+                synchronized (CompareCommunication.class) {
+                    sharedData = i;
+                    System.out.println("Shared Memory - Producer: " + i);
+                }
+            }
+        }
+    }
+
+    static class SharedConsumer extends Thread {
+        public void run() {
+            for (int i = 1; i <= 5; i++) {
+                synchronized (CompareCommunication.class) {
+                    System.out.println(
+                        "Shared Memory - Consumer: " + sharedData
+                    );
+                }
+            }
+        }
+    }
+
+    // Message passing example
+    static class MessageProducer extends Thread {
+        private BlockingQueue<Integer> queue;
+
+        MessageProducer(BlockingQueue<Integer> queue) {
+            this.queue = queue;
+        }
+
+        public void run() {
+            try {
+                for (int i = 1; i <= 5; i++) {
+                    queue.put(i);
+                    System.out.println(
+                        "Message Passing - Producer: " + i
+                    );
+                }
+                queue.put(-1);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    static class MessageConsumer extends Thread {
+        private BlockingQueue<Integer> queue;
+
+        MessageConsumer(BlockingQueue<Integer> queue) {
+            this.queue = queue;
+        }
+
+        public void run() {
+            try {
+                while (true) {
+                    int data = queue.take();
+
+                    if (data == -1)
+                        break;
+
+                    System.out.println(
+                        "Message Passing - Consumer: " + data
+                    );
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+
+        System.out.println("=== SHARED MEMORY ===");
+
+        Thread producer1 = new SharedProducer();
+        Thread consumer1 = new SharedConsumer();
+
+        producer1.start();
+        producer1.join();
+
+        consumer1.start();
+        consumer1.join();
+
+        System.out.println("\n=== MESSAGE PASSING ===");
+
+        BlockingQueue<Integer> queue =
+            new ArrayBlockingQueue<>(5);
+
+        Thread producer2 = new MessageProducer(queue);
+        Thread consumer2 = new MessageConsumer(queue);
+
+        producer2.start();
+        consumer2.start();
+
+        producer2.join();
+        consumer2.join();
+
+        System.out.println("\nProgram completed.");
+    }
+}
+@end
+
+@os3a @ticket
+class TicketBooking implements Runnable
+{
+    public void run()
+    {
+        try   // If exception occurs the execution of the try block immediately stops
+        {
+            Thread.sleep(200);   // Causes the currently executing thread to pause
+        }
+        catch (InterruptedException e)   // Handles specific types of exceptions
+        {
+            e.printStackTrace();
+        }
+        System.out.println("State of bookingThread while mainThread is waiting: "
+                            + TicketSystem.mainThread.getState());
+
+        try
+        {
+            Thread.sleep(100);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class TicketSystem implements Runnable
+{
+    public static Thread mainThread;
+    public static TicketSystem ticketSystem;
+
+    public void run()
+    {
+        TicketBooking booking = new TicketBooking();      // object creation
+        Thread bookingThread = new Thread(booking);       // object creation
+
+        System.out.println("State after creating bookingThread: " + bookingThread.getState());
+        bookingThread.start();
+        System.out.println("State after starting bookingThread: " + bookingThread.getState());
+
+        try
+        {
+            Thread.sleep(50);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        System.out.println("State after sleeping bookingThread: " + bookingThread.getState());
+
+        try
+        {
+            bookingThread.join();   // Moves mainThread to waiting state
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        System.out.println("State after bookingThread finishes: " + bookingThread.getState());
+    }
+
+    public static void main(String[] args)
+    {
+        ticketSystem = new TicketSystem();
+        mainThread = new Thread(ticketSystem);
+        System.out.println("State after creating mainThread: " + mainThread.getState());
+        mainThread.start();
+        System.out.println("State after starting mainThread: " + mainThread.getState());
+    }
+}
+@end
+
+@os3b @threadjoin
+import java.io.*;
+import java.util.*;
+
+public class Threadjoiningmethod extends Thread {
+    public void run() {
+        for (int i = 1; i <= 4; i++) {
+            try {
+                Thread.sleep(500);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            System.out.println(i);
+        }
+    }
+
+    public static void main(String args[]) {
+        Threadjoiningmethod th1 = new Threadjoiningmethod();
+        Threadjoiningmethod th2 = new Threadjoiningmethod();
+        Threadjoiningmethod th3 = new Threadjoiningmethod();
+
+        th1.start();
+        try {
+            th1.join();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        th2.start();
+        try {
+            th2.join();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        th3.start();
+        try {
+            th3.join();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+@end
+
+@os3c @instanttimer
+import java.time.Instant;
+import java.time.Duration;
+
+public class InstantTimer {
+    public static void methodToBeTimed() {
+        // Simulated code
+        try {
+            Thread.sleep(1500); // Simulate a medium delay
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public static void main(String[] args) {
+        Instant start = Instant.now();
+        methodToBeTimed();
+        Instant end = Instant.now();
+        Duration timeElapsed = Duration.between(start, end);
+        System.out.println("Execution time: " + timeElapsed.toMillis() + " milliseconds");
+    }
+}
+@end
+
+@os4a @fibonacci
+import java.io.*;
+
+class FibonacciSeries
+{
+    public static void main(String[] args)
+    {
+        int n = 20;
+        int[] memo = new int[n + 1];
+        for (int i = 1; i <= n; i++)
+        {
+            System.out.print(fibonacci(i, memo) + " ");
+        }
+    }
+
+    public static int fibonacci(int n, int[] memo)
+    {
+        if (memo[n] != 0)
+            return memo[n];
+        if (n == 1 || n == 2)
+            return 1;
+        else
+        {
+            memo[n] = fibonacci(n - 1, memo) + fibonacci(n - 2, memo);
+            return memo[n];
+        }
+    }
+}
+@end
+
+@os4b @sync
+class Sample
+{
+    private int x;
+
+    public int getX()
+    {
+        return x;
+    }
+
+    public void setX(int x)
+    {
+        this.x = x;
+    }
+
+    public synchronized void incr()
+    {
+        int y = getX();
+        y++;
+
+        try
+        {
+            Thread.sleep(1);
+        }
+        catch (InterruptedException e) {}
+
+        setX(y);
+    }
+}
+
+class MyThread extends Thread
+{
+    Sample obj;
+
+    public MyThread(Sample obj)
+    {
+        this.obj = obj;
+    }
+
+    public void run()
+    {
+        obj.incr();
+    }
+}
+
+public class Synchronization
+{
+    public static void main(String[] args)
+    {
+        Sample obj = new Sample();
+        obj.setX(10);
+
+        MyThread t1 = new MyThread(obj);
+        MyThread t2 = new MyThread(obj);
+
+        t1.start();
+        try
+        {
+            t1.join();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        t2.start();
+        try
+        {
+            t2.join();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        System.out.println(obj.getX());
+    }
+}
+@end
+
+@os4c @pooling
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+class Task implements Runnable
+{
+    private String name;
+
+    public Task(String s)
+    {
+        name = s;
+    }
+
+    // Prints task name and sleeps for 1s
+    // This whole process is repeated 5 times
+    public void run()
+    {
+        try
+        {
+            for (int i = 0; i <= 5; i++)
+            {
+                if (i == 0)
+                {
+                    Date d = new Date();
+                    SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
+                    System.out.println("Initialization Time for" + " task name - " + name + " = " + ft.format(d));
+                }
+                else
+                {
+                    Date d = new Date();
+                    SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss");
+                    System.out.println("Executing Time for task name - " + name + " = " + ft.format(d));
+                }
+                Thread.sleep(1000);
+            }
+            System.out.println(name + " complete");
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class PoolingMethod
+{
+    // Maximum number of threads in thread pool
+    static final int MAX_T = 3;
+
+    public static void main(String[] args)
+    {
+        // creates five tasks
+        Runnable r1 = new Task("task 1");
+        Runnable r2 = new Task("task 2");
+        Runnable r3 = new Task("task 3");
+        Runnable r4 = new Task("task 4");
+        Runnable r5 = new Task("task 5");
+
+        ExecutorService pool = Executors.newFixedThreadPool(MAX_T);
+        pool.execute(r1);
+        pool.execute(r2);
+        pool.execute(r3);
+        pool.execute(r4);
+        pool.execute(r5);
+        pool.shutdown();
+    }
+}
+@end
+
+@os5a @boundedbuffer
+import java.util.concurrent.Semaphore;   // used to access multiple threads or processes
+
+class Q
+{
+    int item;
+    static Semaphore semCon = new Semaphore(0);
+    static Semaphore semProd = new Semaphore(1);
+
+    void get()
+    {
+        try
+        {
+            semCon.acquire();
+        }
+        catch (InterruptedException e)
+        {
+            System.out.println("InterruptedException caught");
+        }
+        System.out.println("Consumer consumed item : " + item);
+        semProd.release();
+    }
+
+    void put(int item)
+    {
+        try
+        {
+            semProd.acquire();
+        }
+        catch (InterruptedException e)
+        {
+            System.out.println("InterruptedException caught");
+        }
+        this.item = item;
+        System.out.println("Producer produced item : " + item);
+        semCon.release();
+    }
+}
+
+class Producer implements Runnable
+{
+    Q q;   // Q stands for Queue i.e. Queue class
+
+    Producer(Q q)
+    {
+        this.q = q;
+        new Thread(this, "Producer").start();
+    }
+
+    public void run()
+    {
+        for (int i = 0; i < 5; i++)
+            q.put(i);
+    }
+}
+
+class Consumer implements Runnable   // Consumer Class
+{
+    Q q;
+
+    Consumer(Q q)
+    {
+        this.q = q;
+        new Thread(this, "Consumer").start();
+    }
+
+    public void run()
+    {
+        for (int i = 0; i < 5; i++)
+            q.get();
+    }
+}
+
+class BoundedBuffer   // Main class i.e. Driver class
+{
+    public static void main(String args[])
+    {
+        Q q = new Q();
+        new Consumer(q);
+        new Producer(q);
+    }
+}
+@end
+
+@os5b @syncaccess
+class Counter   // variable
+{
+    private int c = 0;   // Shared variable
+
+    // Method with synchronization block
+    public void inc()
+    {
+        synchronized (this)
+        {
+            c++;
+        }
+    }
+
+    public int get()
+    {
+        return c;
+    }
+}
+
+public class SynchronizedAccess1
+{
+    public static void main(String[] args)
+    {
+        Counter cnt = new Counter();
+
+        // Thread 1 to increment counter
+        Thread t1 = new Thread(() ->
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                cnt.inc();
+            }
+        });
+
+        // Thread 2 to increment counter
+        Thread t2 = new Thread(() ->
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                cnt.inc();
+            }
+        });
+
+        // Start both threads
+        t1.start();
+        t2.start();
+
+        // Wait for threads to finish
+        try
+        {
+            t1.join();
+            t2.join();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+
+        // Print final counter value
+        System.out.println("Counter: " + cnt.get());
+    }
+}
+@end
+
+@os5c @circularqueue
+class Queue
+{
+    private int[] arr;
+    private int front, size;
+    private int capacity;
+
+    public Queue(int c)
+    {
+        arr = new int[c];
+        capacity = c;
+        size = 0;
+        front = 0;
+    }
+
+    public int getFront()
+    {
+        if (size == 0)
+            return -1;
+        return arr[front];
+    }
+
+    public int getRear()
+    {
+        if (size == 0)
+            return -1;
+        int rear = (front + size - 1) % capacity;
+        return arr[rear];
+    }
+
+    public void enqueue(int x)
+    {
+        if (size == capacity)
+            return;
+        int rear = (front + size) % capacity;
+        arr[rear] = x;
+        size++;
+    }
+
+    public int dequeue()
+    {
+        if (size == 0)
+            return -1;
+        int res = arr[front];
+        front = (front + 1) % capacity;
+        size--;
+        return res;
+    }
+}
+
+public class Main
+{
+    public static void main(String[] args)
+    {
+        Queue q = new Queue(4);
+        q.enqueue(10);
+        System.out.println(q.getFront() + " " + q.getRear());
+        q.enqueue(20);
+        System.out.println(q.getFront() + " " + q.getRear());
+        q.enqueue(30);
+        System.out.println(q.getFront() + " " + q.getRear());
+        q.enqueue(40);
+        System.out.println(q.getFront() + " " + q.getRear());
+        q.dequeue();
+        System.out.println(q.getFront() + " " + q.getRear());
+
+        q.dequeue();
+        System.out.println(q.getFront() + " " + q.getRear());
+        q.enqueue(50);
+        System.out.println(q.getFront() + " " + q.getRear());
+    }
+}
+@end
+
+@os6a @readerswriters
+import java.util.concurrent.Semaphore;
+
+public class ReadersWritersProblem {
+
+    private final Semaphore readLock = new Semaphore(1);   // Controls access for readers (allows multiple)
+    private final Semaphore writeLock = new Semaphore(1);  // Controls exclusive access for writer
+    private int readersCount = 0;                          // Tracks the number of active readers
+
+    public void startReading() throws InterruptedException {
+        readLock.acquire();   // Acquire permit for reading
+        synchronized (this) {
+            readersCount++;
+
+            if (readersCount == 1) {   // If first reader, block writers
+                writeLock.acquire();
+            }
+        }
+        readLock.release();   // Release permit for reading
+        System.out.println(Thread.currentThread().getName() + " started reading.");
+    }
+
+    public void stopReading() throws InterruptedException {
+        readLock.acquire();   // Acquire permit to modify readersCount
+        synchronized (this) {
+            readersCount--;
+            if (readersCount == 0) {   // If last reader, unblock writers
+                writeLock.release();
+            }
+        }
+        readLock.release();   // Release permit
+        System.out.println(Thread.currentThread().getName() + " stopped reading.");
+    }
+
+    public void startWriting() throws InterruptedException {
+        writeLock.acquire();   // Acquire exclusive permit for writing
+        System.out.println(Thread.currentThread().getName() + " started writing.");
+    }
+
+    public void stopWriting() {
+        writeLock.release();   // Release exclusive permit
+        System.out.println(Thread.currentThread().getName() + " stopped writing.");
+    }
+
+    public static void main(String[] args) {
+        ReadersWritersProblem rw = new ReadersWritersProblem();
+
+        // Create multiple reader threads
+        for (int i = 0; i < 5; i++) {
+            new Thread(() -> {
+                try {
+                    rw.startReading();
+                    Thread.sleep(1000);   // Simulate reading
+                    rw.stopReading();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }, "Reader-" + (i + 1)).start();
+        }
+
+        // Create a writer thread
+        new Thread(() -> {
+            try {
+                rw.startWriting();
+                Thread.sleep(2000);   // Simulate writing
+                rw.stopWriting();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }, "Writer-1").start();
+    }
+}
+@end
+
+@os6b @deadlock
+// Utility class to pause thread execution
+class Util {
+    static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// this class is shared by both threads
+class Shared {
+
+    // first synchronized method
+    synchronized void test1(Shared s2) {
+        System.out.println(Thread.currentThread().getName()
+                + " enters test1 of " + this);
+        Util.sleep(2000);
+
+        // Trying to call test2 on another object
+        s2.test2();
+        System.out.println(Thread.currentThread().getName()
+                + " exits test1 of " + this);
+    }
+
+    // Second synchronized method
+    synchronized void test2() {
+        System.out.println(Thread.currentThread().getName()
+                + " enters test2 of " + this);
+        Util.sleep(1000);
+
+        // taking object lock of s1 enters into test1 method
+        System.out.println(Thread.currentThread().getName()
+                + " exits test2 of " + this);
+    }
+}
+
+class Thread1 extends Thread {
+    private Shared s1;
+    private Shared s2;
+
+    // constructor to initialize fields
+    public Thread1(Shared s1, Shared s2) {
+        this.s1 = s1;
+        this.s2 = s2;
+    }
+
+    // run method to start a thread
+    @Override
+    public void run() {
+        s1.test1(s2);
+    }
+}
+
+class Thread2 extends Thread {
+    private Shared s1;
+    private Shared s2;
+
+    // constructor to initialize fields
+    public Thread2(Shared s1, Shared s2) {
+        this.s1 = s1;
+        this.s2 = s2;
+    }
+
+    // run method to start a thread
+    @Override
+    public void run() {
+        s2.test1(s1);
+    }
+}
+
+public class Geeks {
+
+    // In this class deadlock occurs
+    public static void main(String[] args) {
+        // creating one object
+        Shared s1 = new Shared();
+        Shared s2 = new Shared();
+
+        // creating first thread and starting it
+        Thread1 t1 = new Thread1(s1, s2);
+        t1.setName("Thread1");
+        t1.start();
+
+        // creating second thread and starting it
+        Thread2 t2 = new Thread2(s1, s2);
+        t2.setName("Thread2");
+        t2.start();
+
+        Util.sleep(2000);
+    }
+}
+@end
+
+@os7a @fcfs
+import java.util.Scanner;
+
+public class FCFSScheduling
+{
+    static void findWaitingTime(int[] processes, int n, int[] burstTime, int[] waitingTime)
+    {
+        waitingTime[0] = 0; // Waiting time for the first process is 0
+
+        // Calculate waiting time for subsequent processes
+        for (int i = 1; i < n; i++) {
+            waitingTime[i] = burstTime[i - 1] + waitingTime[i - 1];
+        }
+    }
+
+    // Function to calculate turnaround time for each process
+    static void findTurnAroundTime(int[] processes, int n, int[] burstTime, int[] waitingTime, int[] turnAroundTime) {
+        // Calculate turnaround time by adding burst time and waiting time
+        for (int i = 0; i < n; i++) {
+            turnAroundTime[i] = burstTime[i] + waitingTime[i];
+        }
+    }
+
+    // Function to calculate and display average times
+    static void findAverageTime(int[] processes, int n, int[] burstTime) {
+        int[] waitingTime = new int[n];
+        int[] turnAroundTime = new int[n];
+        int totalWaitingTime = 0;
+        int totalTurnAroundTime = 0;
+
+        // Calculate waiting time of all processes
+        findWaitingTime(processes, n, burstTime, waitingTime);
+
+        // Calculate turn around time for all processes
+        findTurnAroundTime(processes, n, burstTime, waitingTime, turnAroundTime);
+
+        // Display results
+        System.out.println("Processes\tBurst Time\tWaiting Time\tTurn Around Time");
+        for (int i = 0; i < n; i++) {
+            totalWaitingTime += waitingTime[i];
+            totalTurnAroundTime += turnAroundTime[i];
+            System.out.printf("P%d\t\t%d\t\t%d\t\t%d\n", processes[i], burstTime[i], waitingTime[i], turnAroundTime[i]);
+        }
+
+        System.out.printf("\n Average Waiting Time = %.2f\n", (float) totalWaitingTime / n);
+        System.out.printf("Average Turn Around Time = %.2f\n", (float) totalTurnAroundTime / n);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of processes: ");
+        int n = scanner.nextInt();
+
+        int[] processes = new int[n];
+        int[] burstTime = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            processes[i] = i + 1; // Assign process IDs
+            System.out.print("Enter Burst Time for Process P" + (i + 1) + ": ");
+            burstTime[i] = scanner.nextInt();
+        }
+
+        findAverageTime(processes, n, burstTime);
+
+        scanner.close();
+    }
+}
+@end
+
+@os7b @fcfs2
+// Java program for implementation of FCFS scheduling
+
+import java.text.ParseException;
+
+class GFG {
+
+    // Function to find the waiting time for all processes
+    static void findWaitingTime(int processes[], int n,
+            int bt[], int wt[]) {
+        // waiting time for first process is 0
+        wt[0] = 0;
+
+        // calculating waiting time
+        for (int i = 1; i < n; i++) {
+            wt[i] = bt[i - 1] + wt[i - 1];
+        }
+    }
+
+    // Function to calculate turn around time
+    static void findTurnAroundTime(int processes[], int n,
+            int bt[], int wt[], int tat[]) {
+        // calculating turnaround time by adding bt[i] + wt[i]
+        for (int i = 0; i < n; i++) {
+            tat[i] = bt[i] + wt[i];
+        }
+    }
+
+    // Function to calculate average time
+    static void findavgTime(int processes[], int n, int bt[]) {
+        int wt[] = new int[n], tat[] = new int[n];
+        int total_wt = 0, total_tat = 0;
+
+        // Function to find waiting time of all processes
+        findWaitingTime(processes, n, bt, wt);
+
+        // Function to find turn around time for all processes
+        findTurnAroundTime(processes, n, bt, wt, tat);
+
+        // Display processes along with all details
+        System.out.printf("Processes Burst time Waiting"
+                + " time Turn around time\n");
+
+        // Calculate total waiting time and total turn around time
+        for (int i = 0; i < n; i++) {
+            total_wt = total_wt + wt[i];
+            total_tat = total_tat + tat[i];
+            System.out.printf(" %d ", (i + 1));
+            System.out.printf("     %d ", bt[i]);
+            System.out.printf("     %d", wt[i]);
+            System.out.printf("     %d\n", tat[i]);
+        }
+        float s = (float) total_wt / (float) n;
+        int t = total_tat / n;
+        System.out.printf("Average waiting time = %f", s);
+        System.out.printf("\n");
+        System.out.printf("Average turn around time = %d ", t);
+    }
+
+    // Driver code
+    public static void main(String[] args) throws ParseException {
+        // process id's
+        int processes[] = {1, 2, 3};
+        int n = processes.length;
+
+        // Burst time of all processes
+        int burst_time[] = {10, 5, 8};
+
+        findavgTime(processes, n, burst_time);
+    }
+}
+@end
+
+@os7c @priority
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Priority {
+
+    public static void main(String[] args) {
+
+        System.out.println("*** Priority Scheduling ***");
+
+        System.out.print("Enter Number of Process: ");
+        Scanner sc = new Scanner(System.in);
+        int numberOfProcess = sc.nextInt();
+
+        String process[] = new String[numberOfProcess];
+
+        int p = 1;
+        for (int i = 0; i < numberOfProcess; i++) {
+            process[i] = "P" + p;
+            p++;
+        }
+
+        System.out.println(Arrays.toString(process));
+
+        System.out.print("Enter Burst Time for " + numberOfProcess + " process: ");
+
+        int burstTime[] = new int[numberOfProcess];
+        for (int i = 0; i < numberOfProcess; i++) {
+            burstTime[i] = sc.nextInt();
+        }
+
+        System.out.println(Arrays.toString(burstTime));
+
+        System.out.print("Enter Priority for " + numberOfProcess + " process: ");
+
+        int priority[] = new int[numberOfProcess];
+        for (int i = 0; i < numberOfProcess; i++) {
+            priority[i] = sc.nextInt();
+        }
+
+        System.out.println(Arrays.toString(priority));
+
+        // Sorting process & burst time by priority
+        int temp;
+        String temp2;
+        for (int i = 0; i < numberOfProcess - 1; i++) {
+            for (int j = 0; j < numberOfProcess - 1; j++) {
+                if (priority[j] > priority[j + 1]) {
+                    temp = priority[j];
+                    priority[j] = priority[j + 1];
+                    priority[j + 1] = temp;
+
+                    temp = burstTime[j];
+                    burstTime[j] = burstTime[j + 1];
+                    burstTime[j + 1] = temp;
+
+                    temp2 = process[j];
+                    process[j] = process[j + 1];
+                    process[j + 1] = temp2;
+                }
+            }
+        }
+
+        int TAT[] = new int[numberOfProcess + 1];
+        int waitingTime[] = new int[numberOfProcess + 1];
+
+        // Calculating Waiting Time & Turn Around Time
+        for (int i = 0; i < numberOfProcess; i++) {
+            TAT[i] = burstTime[i] + waitingTime[i];
+            waitingTime[i + 1] = TAT[i];
+        }
+
+        int totalWT = 0;
+        int totalTAT = 0;
+        double avgWT;
+        double avgTAT;
+
+        System.out.println("Process     BT      WT        TAT");
+        for (int i = 0; i < numberOfProcess; i++) {
+
+            System.out.println(process[i] + "          " + burstTime[i] + "       " + waitingTime[i] + "         "
+                    + (TAT[i]));
+            totalTAT += (waitingTime[i] + burstTime[i]);
+            totalWT += waitingTime[i];
+        }
+
+        avgWT = totalWT / (double) numberOfProcess;
+        avgTAT = totalTAT / (double) numberOfProcess;
+
+        System.out.println("\n Average Wating Time: " + avgWT);
+        System.out.println(" Average Turn Around Time: " + avgTAT);
+    }
+}
+@end
+
+@os8a @processsched
+import java.util.Scanner;
+
+public class ProcessScheduling {
+    public static void main(String[] args) {
+        int n, burst_time[], waiting_time[], turnaround_time[];
+        float avg_waiting_time = 0, avg_turnaround_time = 0;
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter total number of processes (maximum 20): ");
+        n = sc.nextInt();
+        burst_time = new int[n];
+        waiting_time = new int[n];
+        turnaround_time = new int[n];
+
+        System.out.println("\nEnter Process Burst Time");
+        for (int i = 0; i < n; i++) {
+            System.out.print("P[" + (i + 1) + "]: ");
+            burst_time[i] = sc.nextInt();
+        }
+
+        waiting_time[0] = 0; // Waiting time for first process is 0
+
+        // Calculating waiting time
+        for (int i = 1; i < n; i++) {
+            waiting_time[i] = 0;
+            for (int j = 0; j < i; j++) {
+                waiting_time[i] += burst_time[j];
+            }
+        }
+
+        // Calculating turnaround time by adding burst_time and waiting_time
+        for (int i = 0; i < n; i++) {
+            turnaround_time[i] = burst_time[i] + waiting_time[i];
+            avg_turnaround_time += turnaround_time[i];
+        }
+
+        avg_turnaround_time /= n;
+        System.out.println("\nAverage Turnaround Time: " + avg_turnaround_time + "ms");
+
+        // Calculating average waiting time
+        for (int i = 0; i < n; i++) {
+            avg_waiting_time += waiting_time[i];
+        }
+
+        avg_waiting_time /= n;
+        System.out.println("\nAverage Waiting Time: " + avg_waiting_time + "ms\n");
+
+        System.out.println("Process\tBurst Time\tWaiting Time\tTurnaround Time");
+        for (int i = 0; i < n; i++) {
+            System.out.println("P[" + (i + 1) + "]\t" + burst_time[i] + "\t\t" + waiting_time[i] + "\t\t" + turnaround_time[i]);
+        }
+
+        sc.close();
+    }
+}
+@end
+
+@os8b @yield
+public class YieldExample {
+    public static void main(String[] args) {
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                System.out.println("Thread 1 is running");
+                Thread.yield(); // Suggests giving up CPU time
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                System.out.println("Thread 2 is running");
+            }
+        });
+
+        t1.start();
+        t2.start();
+    }
+}
+@end
+
+@os9a @pattern
+import java.util.*;
+
+public class Geeks {
+    public static void printPattern(int n)
+    {
+        int i, j;
+
+        // outer loop to handle number of rows
+        for (i = 0; i < n; i++) {
+
+            // inner loop to handle number of columns
+            for (j = 0; j < n; j++) {
+
+                // star will print only when it is in first
+                // row or last row or first column or last column
+                if (i == 0 || j == 0 || i == n - 1
+                        || j == n - 1) {
+                    System.out.print("*");
+                }
+
+                // otherwise print space only
+                else {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    // Driver Function
+    public static void main(String args[])
+    {
+        int n = 6;
+        printPattern(n);
+    }
+}
+@end
+
+@os9b @jframe
+import javax.swing.*;
+
+public class test1
+{
+    JFrame frame;
+
+    test1()
+    {
+        // creating instance of JFrame with name "first way"
+        frame = new JFrame("first way");
+
+        // creates instance of JButton
+        JButton button = new JButton("let's see");
+
+        button.setBounds(200, 150, 90, 50);
+
+        // setting close operation
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // adds button in JFrame
+        frame.add(button);
+
+        // sets 500 width and 600 height
+        frame.setSize(500, 600);
+
+        // uses no layout managers
+        frame.setLayout(null);
+
+        // makes the frame visible
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args)
+    {
+        new test1();
+    }
+}
+@end
+
+@os10a @hashtable
+import java.util.*;
+
+class MyStructure {
+    List<Integer> arr = new ArrayList<>();
+    Map<Integer, Integer> map = new HashMap<>();
+
+    public void insert(int x)
+    {
+        if (!map.containsKey(x)) {
+            int index = arr.size();
+            arr.add(x);
+            map.put(x, index);
+        }
+    }
+
+    public void remove(int x)
+    {
+        if (map.containsKey(x)) {
+            int index = map.get(x);
+            map.remove(x);
+            if (index != arr.size() - 1) {
+                int last = arr.size() - 1;
+                Collections.swap(arr, index, last);
+                if (last != index) {
+                    map.put(arr.get(index), index);
+                }
+            }
+            arr.remove(arr.size() - 1);
+        }
+    }
+
+    public int search(int x)
+    {
+        return map.getOrDefault(x, -1);
+    }
+
+    public int getRandom()
+    {
+        Random rand = new Random();
+        int randomIndex = rand.nextInt(arr.size());
+        return arr.get(randomIndex);
+    }
+}
+
+public class Main {
+    public static void main(String[] args)
+    {
+        MyStructure ds = new MyStructure();
+        ds.insert(10);
+        ds.insert(20);
+        ds.insert(30);
+        ds.insert(40);
+        System.out.println(ds.search(30));
+        ds.remove(40);
+        ds.insert(50);
+        System.out.println(ds.search(50));
+        System.out.println(ds.getRandom());
+    }
+}
+@end
+
+@os10b @hashmap
+import java.util.*;
+
+class GFG {
+    static void createHashMap(int arr[])
+    {
+        // Creates an empty HashMap
+        HashMap<Integer, Integer> hmap = new HashMap<Integer, Integer>();
+
+        // Traverse through the given array
+        for (int i = 0; i < arr.length; i++) {
+
+            // Get if the element is present
+            Integer c = hmap.get(arr[i]);
+
+            // If this is first occurrence of element
+            // Insert the element
+            if (hmap.get(arr[i]) == null) {
+                hmap.put(arr[i], 1);
+            }
+
+            // If elements already exists in hash map
+            // Increment the count of element by 1
+            else {
+                hmap.put(arr[i], ++c);
+            }
+        }
+
+        // Print HashMap
+        System.out.println(hmap);
+    }
+
+    // Driver method to test above method
+    public static void main(String[] args)
+    {
+        int arr[] = { 10, 34, 5, 10, 3, 5, 10 };
+        createHashMap(arr);
+    }
+}
+@end
